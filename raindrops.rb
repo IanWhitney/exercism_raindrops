@@ -5,7 +5,7 @@ require 'prime'
 # 3) Factories are exempt
 class Raindrops < SimpleDelegator
   def self.convert(number)
-    factors = Prime.prime_division(number).map {|x| x[0]}
+    factors = Factors.new(number)
     sound = ""
     sound << "Pling" if factors.include?(3)
     sound << "Plang" if factors.include?(5)
@@ -17,5 +17,18 @@ class Raindrops < SimpleDelegator
   def initialize(sound)
     __setobj__(sound)
     self
+  end
+end
+
+class Factors
+  include Enumerable
+
+  def initialize(number)
+    @members = Prime.prime_division(number).map {|x| x[0]}
+    self
+  end
+
+  def each &block
+    @members.each{|member| block.call(member)}
   end
 end
