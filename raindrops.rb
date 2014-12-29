@@ -5,11 +5,7 @@ require 'prime'
 # 3) Factories are exempt
 class Raindrops < SimpleDelegator
   def self.convert(number)
-    factors = Factors.new(number)
-    sound = ""
-    sound << "Pling" if factors.include?(3)
-    sound << "Plang" if factors.include?(5)
-    sound << "Plong" if factors.include?(7)
+    sound = RainSounds.new(Factors.new(number))
     sound = number.to_s if sound.empty?
     self.new(sound)
   end
@@ -30,5 +26,15 @@ class Factors
 
   def each &block
     @members.each{|member| block.call(member)}
+  end
+end
+
+class RainSounds < String
+  def initialize(numbers)
+    sound = ""
+    sound << "Pling" if numbers.include?(3)
+    sound << "Plang" if numbers.include?(5)
+    sound << "Plong" if numbers.include?(7)
+    super(sound)
   end
 end
