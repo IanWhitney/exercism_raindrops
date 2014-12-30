@@ -3,15 +3,13 @@ require 'prime'
 # 1) Always return self
 # 2) Objects can query themselves
 # 3) Factories are exempt
-class Raindrops < SimpleDelegator
+class Raindrops < String
   def self.convert(number)
-    sound = RainSounds.new(Factors.new(number))
-    sound = number.to_s if sound.empty?
-    self.new(sound)
+    self.new(number)
   end
 
-  def initialize(sound)
-    __setobj__(sound)
+  def initialize(number)
+    super(RainSounds.new(Factors.new(number), number))
     self
   end
 end
@@ -30,11 +28,23 @@ class Factors
 end
 
 class RainSounds < String
-  def initialize(numbers)
-    sound = ""
-    sound << "Pling" if numbers.include?(3)
-    sound << "Plang" if numbers.include?(5)
-    sound << "Plong" if numbers.include?(7)
-    super(sound)
+  def initialize(numbers, fallback)
+    sounds = numbers.inject("") { |ret, n| ret << SoundFactory.build(n)}
+    if sounds.empty?
+      super(fallback.to_s)
+    else
+      super(sounds)
+    end
+    self
+  end
+end
+
+class SoundFactory
+  def self.build(number)
+    {
+      3 => "Pling",
+      5 => "Plang",
+      7 => "Plong",
+    }[number].to_s
   end
 end
