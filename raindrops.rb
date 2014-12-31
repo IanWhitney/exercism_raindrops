@@ -9,7 +9,7 @@ class Raindrops
   def self.convert(number, surface: Bucket)
     drops = DropCounts.new(number)
     sound = Sound.made_by(drops, surface)
-    sound.empty? ? number.to_s : sound
+    sound.silent? ? number.to_s : sound
   end
 end
 
@@ -35,6 +35,10 @@ class Sound < String
       sound << surface.make_sound(drop)
     end
     super(sound)
+  end
+
+  def silent?
+    empty?
   end
 
   private
