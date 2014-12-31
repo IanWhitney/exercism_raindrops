@@ -7,7 +7,7 @@ require 'prime'
 
 class Raindrops
   def self.convert(drops, surface: Bucket, counter: RaindropCounts)
-    SoundEffect.made_by(drops, surface, counter).to_s
+    SoundEffect.made_by(drops, surface, counter)
   end
 end
 
@@ -23,7 +23,7 @@ class RaindropCounts
   end
 end
 
-class SoundEffect
+class SoundEffect < SimpleDelegator
   def self.made_by(substance, surface, counter)
     self.new(substance, surface, counter)
   end
@@ -32,29 +32,18 @@ class SoundEffect
     self.substance = substance
     self.surface = surface
     self.counter = counter
-    make_sound
-  end
-
-  def silent?
-    sound.empty?
-  end
-
-  def to_s
-    silent? ? substance.to_s : sound.to_s
+    __setobj__(make_sound)
   end
 
   private
 
   attr_accessor :substance, :surface, :counter
 
-  def sound
-    @sound ||= ""
-  end
-
   def make_sound
-    counter.new(substance).each do |hit|
-      sound << surface.make_sound(hit)
+    sound = counter.new(substance).each_with_object("") do |hit, s|
+      s << surface.make_sound(hit)
     end
+    sound.empty? ? substance.to_s : sound.to_s
   end
 end
 
