@@ -8,11 +8,11 @@ require 'prime'
 class Raindrops
   def self.convert(number)
     drops = DropCounts.new(number)
-    ret = ""
-    ret << "Pling" if drops.include?(3)
-    ret << "Plang" if drops.include?(5)
-    ret << "Plong" if drops.include?(7)
-    ret.empty? ? number.to_s : ret
+    sound = ""
+    sound << "Pling" if drops.include?(3)
+    sound << "Plang" if drops.include?(5)
+    sound << "Plong" if drops.include?(7)
+    sound.empty? ? number.to_s : sound
   end
 
 end
