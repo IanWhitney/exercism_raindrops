@@ -45,8 +45,8 @@ class Sound < String
 end
 
 class Bucket
-  def self.make_sound(times)
-    case times
+  def self.make_sound(hit_count)
+    case hit_count
     when 3
       "Pling"
     when 5
