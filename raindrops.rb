@@ -7,11 +7,24 @@ require 'prime'
 
 class Raindrops
   def self.convert(number)
-    factors = Prime.prime_division(number).map {|x| x[0]}
+    drops = DropCounts.new(number)
     ret = ""
-    ret << "Pling" if factors.include?(3)
-    ret << "Plang" if factors.include?(5)
-    ret << "Plong" if factors.include?(7)
+    ret << "Pling" if drops.include?(3)
+    ret << "Plang" if drops.include?(5)
+    ret << "Plong" if drops.include?(7)
     ret.empty? ? number.to_s : ret
+  end
+
+end
+
+class DropCounts
+  include Enumerable
+
+  def initialize(number)
+    @members = Prime.prime_division(number).map(&:first)
+  end
+
+  def each &block
+    @members.each{|member| block.call(member)}
   end
 end
