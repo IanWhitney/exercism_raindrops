@@ -31,10 +31,15 @@ class Sound < String
   end
 
   def initialize(drops)
-    sound = ""
     sound << "Pling" if drops.include?(3)
     sound << "Plang" if drops.include?(5)
     sound << "Plong" if drops.include?(7)
     super(sound)
+  end
+
+  private
+
+  def sound
+    @sound ||= ""
   end
 end
