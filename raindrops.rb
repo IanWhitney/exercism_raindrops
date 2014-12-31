@@ -6,9 +6,9 @@ require 'prime'
 #Small
 
 class Raindrops
-  def self.convert(number)
+  def self.convert(number, surface: Bucket)
     drops = DropCounts.new(number)
-    sound = Sound.made_by(drops)
+    sound = Sound.made_by(drops, surface)
     sound.empty? ? number.to_s : sound
   end
 end
@@ -26,14 +26,14 @@ class DropCounts
 end
 
 class Sound < String
-  def self.made_by(drops)
-    self.new(drops)
+  def self.made_by(drops, surface)
+    self.new(drops, surface)
   end
 
-  def initialize(drops)
-    sound << "Pling" if drops.include?(3)
-    sound << "Plang" if drops.include?(5)
-    sound << "Plong" if drops.include?(7)
+  def initialize(drops, surface)
+    drops.each do |drop|
+      sound << surface.make_sound(drop)
+    end
     super(sound)
   end
 
@@ -41,5 +41,20 @@ class Sound < String
 
   def sound
     @sound ||= ""
+  end
+end
+
+class Bucket
+  def self.make_sound(times)
+    case times
+    when 3
+      "Pling"
+    when 5
+      "Plang"
+    when 7
+      "Plong"
+    else
+      ""
+    end
   end
 end
