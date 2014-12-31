@@ -6,14 +6,12 @@ require 'prime'
 #Small
 
 class Raindrops
-  def self.convert(number, surface: Bucket)
-    drops = DropCounts.new(number)
-    sound = Sound.made_by(drops, surface)
-    sound.silent? ? number.to_s : sound
+  def self.convert(drops, surface: Bucket, counter: RaindropCounts)
+    SoundEffect.made_by(drops, surface, counter).to_s
   end
 end
 
-class DropCounts
+class RaindropCounts
   include Enumerable
 
   def initialize(number)
@@ -25,26 +23,38 @@ class DropCounts
   end
 end
 
-class Sound < String
-  def self.made_by(drops, surface)
-    self.new(drops, surface)
+class SoundEffect
+  def self.made_by(substance, surface, counter)
+    self.new(substance, surface, counter)
   end
 
-  def initialize(drops, surface)
-    drops.each do |drop|
-      sound << surface.make_sound(drop)
-    end
-    super(sound)
+  def initialize(substance, surface, counter)
+    self.substance = substance
+    self.surface = surface
+    self.counter = counter
+    make_sound
   end
 
   def silent?
-    empty?
+    sound.empty?
+  end
+
+  def to_s
+    silent? ? substance.to_s : sound.to_s
   end
 
   private
 
+  attr_accessor :substance, :surface, :counter
+
   def sound
     @sound ||= ""
+  end
+
+  def make_sound
+    counter.new(substance).each do |hit|
+      sound << surface.make_sound(hit)
+    end
   end
 end
 
