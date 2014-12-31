@@ -8,13 +8,9 @@ require 'prime'
 class Raindrops
   def self.convert(number)
     drops = DropCounts.new(number)
-    sound = ""
-    sound << "Pling" if drops.include?(3)
-    sound << "Plang" if drops.include?(5)
-    sound << "Plong" if drops.include?(7)
+    sound = Sound.made_by(drops)
     sound.empty? ? number.to_s : sound
   end
-
 end
 
 class DropCounts
@@ -26,5 +22,19 @@ class DropCounts
 
   def each &block
     @members.each{|member| block.call(member)}
+  end
+end
+
+class Sound < String
+  def self.made_by(drops)
+    self.new(drops)
+  end
+
+  def initialize(drops)
+    sound = ""
+    sound << "Pling" if drops.include?(3)
+    sound << "Plang" if drops.include?(5)
+    sound << "Plong" if drops.include?(7)
+    super(sound)
   end
 end
