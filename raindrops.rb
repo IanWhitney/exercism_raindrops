@@ -1,5 +1,10 @@
 require 'prime'
 
+#Tests Pass
+#Expresses Intent
+#No Duplication (DRY)
+#Small
+
 class Raindrops
   def self.convert(number)
     factors = Prime.prime_division(number).map {|x| x[0]}
